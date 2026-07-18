@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { sendWelcomeEmail } from './actions';
 
 export default function HomePage() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // عنوان محفظتك الحقيقي لشبكة BEP20
@@ -16,17 +18,28 @@ export default function HomePage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
+    if (!email.trim()) return;
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('email', email);
+
+    const result = await sendWelcomeEmail(formData);
+
+    setLoading(false);
+    if (result.success) {
       setSubscribed(true);
       setEmail('');
-      setTimeout(() => setSubscribed(false), 3000);
+      setTimeout(() => setSubscribed(false), 5000);
+    } else {
+      alert('حدث خطأ أثناء الاشتراك، يرجى المحاولة لاحقاً.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-950 text-gray-100 font-sans flex flex-col justify-between" dir="ltr">
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -45,7 +58,6 @@ export default function HomePage() {
         
         {/* TOP GRID: Market Overview & Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Market Stats Card */}
           <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <h2 className="text-lg font-semibold mb-4 text-gray-200">Market Overview</h2>
@@ -77,7 +89,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Technical Indicators Insights */}
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <h2 className="text-lg font-semibold mb-4 text-gray-200">Analyst Insights</h2>
@@ -95,14 +106,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* BOTTOM GRID: Deposit, Where to Trade & Email Registration */}
+        {/* BOTTOM GRID */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* 1. Deposit Section */}
+          {/* Deposit Section */}
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center space-x-2 rtl:space-x-reverse mb-3">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                 <h3 className="text-md font-semibold text-gray-200">Fund Your Account</h3>
               </div>
               <p className="text-xs text-gray-400 mb-4">Deposit funds directly via USDT to initiate trading allocations.</p>
@@ -127,31 +138,21 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* 2. Where to Trade Section */}
+          {/* Where to Trade Section */}
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center space-x-2 rtl:space-x-reverse mb-3">
-                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 <h3 className="text-md font-semibold text-gray-200">Where to Trade</h3>
               </div>
               <p className="text-xs text-gray-400 mb-4">Access premium liquidity and trading options via our verified terminal partners:</p>
               
               <div className="space-y-2">
-                <a 
-                  href="https://primexbt.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex items-center justify-between p-2.5 bg-gray-950 border border-gray-800/60 rounded-lg hover:border-cyan-500/50 transition group"
-                >
+                <a href="https://primexbt.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-2.5 bg-gray-950 border border-gray-800/60 rounded-lg hover:border-cyan-500/50 transition group">
                   <span className="text-xs font-medium text-gray-300 group-hover:text-cyan-400">PrimeXBT Terminal</span>
                   <span className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded">Trade Now →</span>
                 </a>
-                <a 
-                  href="https://www.binance.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex items-center justify-between p-2.5 bg-gray-950 border border-gray-800/60 rounded-lg hover:border-amber-500/50 transition group"
-                >
+                <a href="https://www.binance.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-2.5 bg-gray-950 border border-gray-800/60 rounded-lg hover:border-amber-500/50 transition group">
                   <span className="text-xs font-medium text-gray-300 group-hover:text-amber-400">Binance Exchange</span>
                   <span className="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded">Trade Now →</span>
                 </a>
@@ -160,35 +161,37 @@ export default function HomePage() {
             <div className="text-[10px] text-rose-400/80 mt-4 text-center italic font-medium">* Warning: Send only USDT via the BEP20 network to this address.</div>
           </div>
 
-          {/* 3. Email Registration Section */}
+          {/* Email Registration Section */}
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center space-x-2 rtl:space-x-reverse mb-3">
-                <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 <h3 className="text-md font-semibold text-gray-200">Join Analyst List</h3>
               </div>
               <p className="text-xs text-gray-400 mb-4">Subscribe to receive instant technical alerts, setups, and trend reports directly in your inbox.</p>
               
-              <form onSubmit={handleSubscribe} className="space-y-2">
+              <form onSubmit={handleSubscribeSubmit} className="space-y-2">
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address" 
                   required
-                  className="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg px-3 py-2.5 text-gray-200 placeholder-gray-600 focus:outline-none focus:border-purple-500 transition"
+                  disabled={loading}
+                  className="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg px-3 py-2.5 text-gray-200 placeholder-gray-600 focus:outline-none focus:border-purple-500 transition disabled:opacity-50"
                 />
                 <button 
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs py-2.5 px-4 rounded-lg transition shadow-lg shadow-purple-900/20"
+                  disabled={loading}
+                  className="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs py-2.5 px-4 rounded-lg transition shadow-lg shadow-purple-900/20 disabled:opacity-50"
                 >
-                  Subscribe to Platform
+                  {loading ? 'Processing...' : 'Subscribe to Platform'}
                 </button>
               </form>
             </div>
             {subscribed && (
-              <div className="text-[11px] text-purple-400 mt-2 text-center font-medium animate-pulse">
-                ✓ Thank you! Email registered successfully.
+              <div className="text-[11px] text-emerald-400 mt-2 text-center font-medium animate-pulse">
+                ✓ Check your inbox! Confirmation email sent.
               </div>
             )}
           </div>
