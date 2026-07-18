@@ -2,20 +2,21 @@
 
 import { Resend } from 'resend';
 
-// تأكد من وضع مفتاح الـ API الخاص بك هنا
-const resend = new Resend('ضع_مفتاح_API_KEY_الخاص_بك_هنا');
+// مفتاح الـ API الخاص بك لتشغيل النظام
+const resend = new Resend('re_WfHYddDX_LY7GX64zQEDrPNQuSz3GW8k9');
 
 export async function sendWelcomeEmail(formData: FormData) {
-  const email = formData.get('email') as string;
+  const subscriberEmail = formData.get('email') as string;
 
-  if (!email) {
+  if (!subscriberEmail) {
     return { success: false, error: 'Email is required' };
   }
 
   try {
-    const response = await resend.emails.send({
+    // 1. الإيميل الأول: يرسل للمشترك مباشرة للترحيب به
+    await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: [email],
+      to: [subscriberEmail],
       subject: 'Welcome to Mohamed Market Analyst Platform! 🚀',
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0b0f19; color: #f3f4f6; border-radius: 12px; border: 1px solid #1f2937;">
@@ -36,9 +37,30 @@ export async function sendWelcomeEmail(formData: FormData) {
       `,
     });
 
-    return { success: true, data: response };
+    // 2. الإيميل الثاني: يرسل إليك أنت لتنبيهك بالمشترك الجديد
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: ['mohamed.tahour.dz@gmail.com'], // بريدك الشخصي لتلقي الإشعارات
+      subject: '🎉 New Subscriber Alert! - Mohamed Market Analyst',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0b0f19; color: #f3f4f6; border-radius: 12px; border: 1px solid #1f2937;">
+          <h2 style="color: #3b82f6; font-size: 20px; margin-bottom: 15px;">Notification: New Registration</h2>
+          <p style="font-size: 14px; color: #d1d5db;">Hello Mohamed,</p>
+          <p style="font-size: 14px; color: #d1d5db;">A new user has just subscribed to your platform updates.</p>
+          
+          <div style="margin: 20px 0; padding: 15px; background-color: #030712; border-radius: 8px; border: 1px solid #1f2937;">
+            <p style="font-size: 12px; color: #9ca3af; margin: 0;">User Email:</p>
+            <span style="font-family: monospace; font-size: 15px; color: #3b82f6; font-weight: bold;">${subscriberEmail}</span>
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid #1f2937; margin: 20px 0;">
+          <p style="font-size: 12px; color: #6b7280; text-align: center;">Mohamed Market Analyst &bull; Internal System Alert</p>
+        </div>
+      `,
+    });
+
+    return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
-    
   }
-            }
+}
