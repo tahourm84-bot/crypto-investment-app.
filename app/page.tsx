@@ -1,93 +1,82 @@
-"use client";
+import React from 'react';
 
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, ArrowUpRight, ArrowDownRight, Wallet, Activity } from 'lucide-react';
-
-export default function TradingDashboard() {
-  const [balance, setBalance] = useState(12500.50);
-  const [prices, setPrices] = useState({
-    BTC: { price: 67240.00, change: 2.4 },
-    ETH: { price: 3480.25, change: -1.2 },
-    SUI: { price: 1.75, change: 5.8 },
-    DOGE: { price: 0.142, change: 12.1 }
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPrices(prev => ({
-        BTC: { price: prev.BTC.price + (Math.random() - 0.5) * 50, change: prev.BTC.change },
-        ETH: { price: prev.ETH.price + (Math.random() - 0.5) * 5, change: prev.ETH.change },
-        SUI: { price: prev.SUI.price + (Math.random() - 0.5) * 0.02, change: prev.SUI.change },
-        DOGE: { price: prev.DOGE.price + (Math.random() - 0.5) * 0.002, change: prev.DOGE.change }
-      }));
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleMockTrade = (coin: string, type: 'BUY' | 'SELL') => {
-    alert(`تم تنفيذ أمر ${type === 'BUY' ? 'شراء' : 'بيع'} لعملة ${coin} بنجاح!`);
-  };
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans" dir="rtl">
-      <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
-        <div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-gray-950 text-gray-100 font-sans flex flex-col justify-between">
+      {/* Header */}
+      <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-3 rtl:space-x-reverse">
+          <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
             Mohamed Market Analyst Platform
           </h1>
-          <p className="text-slate-400 text-sm mt-1">نظام المحاكاة وتحليل أسواق الكريبتو اللحظي</p>
         </div>
-        <div className="flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 self-stretch md:self-auto justify-between">
-          <div className="text-right">
-            <p className="text-xs text-slate-400">الرصيد المتوفر</p>
-            <p className="font-mono font-bold text-emerald-400 text-left">${balance.toLocaleString()}</p>
-          </div>
-          <Wallet className="text-cyan-400 w-5 h-5" />
+        <div className="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-gray-700">
+          Live Market Data
         </div>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {Object.entries(prices).map(([ticker, info]) => (
-          <div key={ticker} className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition-all text-right">
-            <div className="flex justify-between items-start mb-3">
-              <span className="font-bold text-lg text-slate-200">{ticker}/USDT</span>
-              <span className={`flex items-center text-xs font-medium px-2 py-1 rounded-full ${
-                info.change >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
-              }`}>
-                {info.change >= 0 ? <ArrowUpRight className="w-3 h-3 ml-1" /> : <ArrowDownRight className="w-3 h-3 ml-1" />}
-                {info.change}%
-              </span>
-            </div>
-            <div className="text-2xl font-mono font-bold text-white mb-4 text-left">
-              ${info.price.toLocaleString(undefined, { minimumFractionDigits: ticker === 'DOGE' ? 3 : 2 })}
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button 
-                onClick={() => handleMockTrade(ticker, 'BUY')}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-xl text-sm transition-colors"
-              >
-                شراء
-              </button>
-              <button 
-                onClick={() => handleMockTrade(ticker, 'SELL')}
-                className="bg-rose-600 hover:bg-rose-500 text-white font-medium py-2 rounded-xl text-sm transition-colors"
-              >
-                بيع
-              </button>
+      {/* Main Content */}
+      <main className="max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow">
+        {/* Market Stats Card */}
+        <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <h2 className="text-lg font-semibold mb-4 text-gray-200">Market Overview</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
+                <p className="text-xs text-gray-500 uppercase">BTC/USDT</p>
+                <p className="text-lg font-bold text-emerald-400 mt-1">$67,240.00</p>
+                <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">+2.4%</span>
+              </div>
+              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
+                <p className="text-xs text-gray-500 uppercase">ETH/USDT</p>
+                <p className="text-lg font-bold text-emerald-400 mt-1">$3,480.25</p>
+                <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">+1.2%</span>
+              </div>
+              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
+                <p className="text-xs text-gray-500 uppercase">SUI/USDT</p>
+                <p className="text-lg font-bold text-emerald-400 mt-1">$1.75</p>
+                <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">+5.8%</span>
+              </div>
+              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
+                <p className="text-xs text-gray-500 uppercase">DOGE/USDT</p>
+                <p className="text-lg font-bold text-rose-400 mt-1">$0.142</p>
+                <span className="text-[10px] text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded">-1.1%</span>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 text-right">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 justify-start">
-          <Activity className="text-cyan-400 w-5 h-5" /> مراقب حركة السوق المباشر
-        </h3>
-        <div className="h-48 flex items-center justify-center border border-dashed border-slate-800 rounded-xl bg-slate-950/50">
-          <p className="text-slate-500 text-sm animate-pulse">جاري سحب التغذية السعرية الحية للمؤشرات الفنية...</p>
+          
+          <div className="mt-8 border-t border-gray-800/60 pt-4 text-xs text-gray-500">
+            * Data updates dynamically based on system metrics.
+          </div>
         </div>
-      </div>
+
+        {/* Technical Indicators Insights */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <h2 className="text-lg font-semibold mb-4 text-gray-200">Analyst Insights</h2>
+            <div className="space-y-4">
+              <div className="p-3 bg-gray-950 rounded-lg border-l-2 border-emerald-500">
+                <p className="text-xs text-gray-400 font-medium">Technical Setup</p>
+                <p className="text-sm text-gray-300 mt-1">SUI consolidating above key support levels. Looking for clear breakout confirmations.</p>
+              </div>
+              <div className="p-3 bg-gray-950 rounded-lg border-l-2 border-amber-500">
+                <p className="text-xs text-gray-400 font-medium">Market Sentiment</p>
+                <p className="text-sm text-gray-300 mt-1">Volume patterns indicating a slight squeeze. Patience is required before entry execution.</p>
+              </div>
+            </div>
+          </div>
+
+          <button className="w-full mt-6 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm py-2.5 px-4 rounded-lg transition shadow-lg shadow-emerald-900/20">
+            Refresh Analysis
+          </button>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-800 bg-gray-900/30 px-6 py-4 text-center text-xs text-gray-500">
+        &copy; {new Date().getFullYear()} Mohamed Market Analyst. All rights reserved.
+      </footer>
     </div>
   );
-                   
 }
