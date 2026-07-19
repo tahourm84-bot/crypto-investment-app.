@@ -39,25 +39,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 font-sans flex flex-col justify-between" dir="ltr">
-      
-      {/* شريط الأسعار المتحرك (Ticker) */}
-      <div className="w-full bg-black border-b border-green-900 py-3 overflow-hidden whitespace-nowrap">
-        <style>{`
-          @keyframes ticker {
-            0% { transform: translate(100%, 0); }
-            100% { transform: translate(-100%, 0); }
-          }
-          .ticker-animate {
-            display: inline-block;
-            animation: ticker 20s linear infinite;
-          }
-        `}</style>
-        <div className="ticker-animate text-green-500 font-mono font-bold text-sm">
-          SUI: $1.75 (+5.8%) &nbsp;&nbsp;&nbsp; BTC: $67,240.00 (+2.4%) &nbsp;&nbsp;&nbsp; ETH: $3,480.25 (+1.2%) &nbsp;&nbsp;&nbsp; DOGE: $0.142 (-1.1%) &nbsp;&nbsp;&nbsp; TSLAI: $240.50 (+1.2%)
-        </div>
-      </div>
-
-      {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
           <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -70,9 +51,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl w-full mx-auto p-6 space-y-6 flex-grow">
-        {/* TOP GRID: Market Overview & Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
             <div>
@@ -109,7 +88,6 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 bg-gray-900/30 px-6 py-4 text-center text-xs text-gray-500">
         &copy; {new Date().getFullYear()} Mohamed Market Analyst. All rights reserved.
       </footer>
