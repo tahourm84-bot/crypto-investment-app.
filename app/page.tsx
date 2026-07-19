@@ -1,108 +1,69 @@
 'use client';
 
-import React, { useState } from 'react';
-import { sendWelcomeEmail } from './actions';
+import React from 'react';
 
-export default function HomePage() {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const walletAddress = "0x99da633903a98b19df8354a0fb9b05719a836afd"; 
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(walletAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSubscribeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('email', email);
-
-    const result = await sendWelcomeEmail(formData);
-
-    setLoading(false);
-    if (result.success) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 5000);
-    } else {
-      alert('حدث خطأ أثناء الاشتراك، يرجى المحاولة لاحقاً.');
-    }
-  };
-
+export default function ControlCenter() {
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 font-sans flex flex-col justify-between" dir="ltr">
-      <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            Mohamed Market Analyst Platform
-          </h1>
-        </div>
+    <div className="min-h-screen bg-[#050505] text-gray-300 p-2 font-mono text-[11px] overflow-hidden">
+      {/* الشريط العلوي للتحكم */}
+      <header className="grid grid-cols-4 gap-2 mb-2 border border-gray-800 p-2 bg-[#0a0a0a]">
+        <div className="col-span-1 text-emerald-500 font-bold">SYSTEM STATUS: ACTIVE</div>
+        <div className="col-span-2 text-center text-gray-500">CONTROL ROOM: TURBINE UNIT 01-B</div>
+        <div className="col-span-1 text-right text-gray-500">2026-07-19 13:29:00</div>
       </header>
 
-      <main className="max-w-7xl w-full mx-auto p-6 space-y-6 flex-grow">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 text-gray-200">Market Overview</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
-                <p className="text-xs text-gray-500 uppercase">BTC/USDT</p>
-                <p className="text-lg font-bold text-emerald-400 mt-1">$67,240.00</p>
+      {/* منطقة النوافذ الكثيفة */}
+      <div className="grid grid-cols-4 grid-rows-3 gap-2 h-[calc(100vh-60px)]">
+        
+        {/* نافذة كبيرة للأسعار */}
+        <div className="col-span-2 row-span-2 border border-gray-800 p-4 bg-[#0a0a0a] flex flex-col">
+          <h3 className="text-emerald-400 mb-2 border-b border-gray-800 pb-1">MARKET FEED (LIVE)</h3>
+          <div className="flex-grow grid grid-cols-2 gap-4 items-center">
+            {['BTC/USDT', 'SUI/USDT', 'ETH/USDT', 'DOGE/USDT'].map(asset => (
+              <div key={asset} className="border border-gray-900 p-2">
+                <div className="text-[9px] text-gray-600">{asset}</div>
+                <div className="text-xl text-white">67,240.00</div>
               </div>
-              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
-                <p className="text-xs text-gray-500 uppercase">ETH/USDT</p>
-                <p className="text-lg font-bold text-emerald-400 mt-1">$3,480.25</p>
-              </div>
-              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
-                <p className="text-xs text-gray-500 uppercase">SUI/USDT</p>
-                <p className="text-lg font-bold text-emerald-400 mt-1">$1.75</p>
-              </div>
-              <div className="bg-gray-950 p-4 rounded-lg border border-gray-800/80">
-                <p className="text-xs text-gray-500 uppercase">DOGE/USDT</p>
-                <p className="text-lg font-bold text-rose-400 mt-1">$0.142</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 text-gray-200">Analyst Insights</h2>
-            <div className="p-3 bg-gray-950 rounded-lg border-l-2 border-emerald-500">
-              <p className="text-xs text-gray-400">Technical Setup</p>
-              <p className="text-sm text-gray-300 mt-1">SUI consolidating above key support levels.</p>
-            </div>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
-            <h3 className="text-md font-semibold text-gray-200 mb-3">Deposit Address</h3>
-            <p className="text-xs font-mono text-gray-300 bg-gray-950 p-3 rounded">{walletAddress}</p>
-            <button onClick={handleCopy} className="w-full mt-3 bg-gray-800 text-xs py-2 rounded text-gray-300">
-              {copied ? 'Copied!' : 'Copy Address'}
-            </button>
-          </div>
-
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
-            <h3 className="text-md font-semibold text-gray-200 mb-3">Join List</h3>
-            <form onSubmit={handleSubscribeSubmit} className="flex gap-2">
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="flex-grow bg-gray-950 border border-gray-800 rounded px-3 py-2 text-xs" />
-              <button type="submit" disabled={loading} className="bg-purple-600 text-white text-xs px-4 py-2 rounded">Subscribe</button>
-            </form>
+        {/* نافذة التسجيل */}
+        <div className="col-span-2 row-span-1 border border-gray-800 p-4 bg-[#0a0a0a]">
+          <h3 className="text-purple-400 mb-2">ACCESS CONTROL</h3>
+          <div className="grid grid-cols-2 gap-2">
+            <input className="bg-black border border-gray-800 p-2 w-full" placeholder="USER ID..." />
+            <button className="bg-purple-900 text-white p-2">AUTHORIZE</button>
           </div>
         </div>
-      </main>
 
-      <footer className="border-t border-gray-800 bg-gray-900/30 px-6 py-4 text-center text-xs text-gray-500">
-        &copy; {new Date().getFullYear()} Mohamed Market Analyst.
-      </footer>
+        {/* نافذة التحويل */}
+        <div className="col-span-1 row-span-1 border border-gray-800 p-4 bg-[#0a0a0a]">
+          <h3 className="text-blue-400 mb-2">WALLET</h3>
+          <div className="break-all text-[9px] bg-black p-2 border border-gray-800">0x99da633903a98b19df8354a0fb9b05719a836afd</div>
+        </div>
+
+        {/* نافذة الحالة الإضافية */}
+        <div className="col-span-1 row-span-1 border border-gray-800 p-4 bg-[#0a0a0a]">
+          <h3 className="text-yellow-400 mb-2">LOGS</h3>
+          <div className="text-[9px] text-gray-600">
+            [13:29:00] Turbine stable<br/>
+            [13:28:55] Market feed synced
+          </div>
+        </div>
+
+        {/* نافذة عرضية سفلية */}
+        <div className="col-span-4 row-span-1 border border-gray-800 p-4 bg-[#0a0a0a]">
+          <h3 className="text-rose-400 mb-2">CRITICAL ALARMS</h3>
+          <div className="grid grid-cols-4 gap-2">
+            <div className="bg-black p-2 border border-rose-900 text-rose-500 text-center">TEMP_NORMAL</div>
+            <div className="bg-black p-2 border border-rose-900 text-rose-500 text-center">FLOW_STABLE</div>
+            <div className="bg-black p-2 border border-rose-900 text-rose-500 text-center">VOLTAGE_OK</div>
+            <div className="bg-black p-2 border border-rose-900 text-rose-500 text-center">NETWORK_UP</div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
